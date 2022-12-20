@@ -1,5 +1,6 @@
-package Main
+
+import parser.ArgumentParser
 
 object Main extends App {
-  println("Hello there")
+  ArgumentParser.parse(args)
 }
