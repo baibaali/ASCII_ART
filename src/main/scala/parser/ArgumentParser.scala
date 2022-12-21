@@ -30,13 +30,16 @@ Note that --input and --output-file/--output-console is required.
 
   def parse(args: Array[String]) : (ListBuffer[Command], ImageLoader, ListBuffer[ImageWriter]) = {
 
-    if (args.length == 0)
+    if (args.length == 0) {
       println(usage)
-
+      throw new Exception("No arguments were given")
+    }
     var loader: ImageLoader = new RandomImageGenerator()
-    var output = new ListBuffer[ImageWriter]
+    val output = new ListBuffer[ImageWriter]
 
-    //TODO: convert to int/double properly
+    var isImageSet: Boolean = false
+    var isOutputSet: Boolean = false
+
     def parseArgs(list: ListBuffer[Command], argumentList: List[String]): (ListBuffer[Command], ImageLoader, ListBuffer[ImageWriter]) = {
       argumentList match {
         case Nil => (list, loader, output)
@@ -46,43 +49,58 @@ Note that --input and --output-file/--output-console is required.
         case "--image" :: value :: tail =>
           val fileFormat = value.substring(value.lastIndexOf('.') + 1)
           fileFormat match {
-            case "png" => loader = new PNGImageLoader(value)
-            case "jpg" => loader = new JPGImageLoader(value)
+            case "png" =>
+              loader = new PNGImageLoader(value)
+              isImageSet = true
+            case "jpg" =>
+              loader = new JPGImageLoader(value)
+              isImageSet = true
             case _     =>
-              print("Unsupported file format")
-              exit(1)
+              throw new Exception("Unsupported file format")
           }
           parseArgs(list, tail)
         case "--image-random" :: tail =>
           loader = new RandomImageGenerator()
+          isImageSet = true
           parseArgs(list, tail)
         case "--output-file" :: value :: tail =>
           output.append(new FileOutput(value))
+          isOutputSet = true
           parseArgs(list, tail)
         case "--output-console" :: tail =>
           output.append(new ConsoleOutput())
+          isOutputSet = true
           parseArgs(list, tail)
         case "--rotate" :: value :: tail =>
+          val degree = value.toInt
+          if (degree % 90 != 0)
+            throw new Exception("Unsupported degree value")
           parseArgs(list.append(new Rotate(value.toInt)), tail)
-        case "--scale" :: value :: tail =>
-          parseArgs(list.append(new Scale(value.toDouble)), tail)
         case "--invert" :: tail =>
           parseArgs(list.append(new Invert()), tail)
         case "--brightness" :: value :: tail =>
           parseArgs(list.append(new Brightness(value.toInt)), tail)
         case "--flip" :: value :: tail =>
+          if (value != "x" && value != "y")
+            throw new Exception("Wrong value for option --flip")
           parseArgs(list.append(new Flip(value)), tail)
         case "--custom-table" :: value :: tail =>
           DefaultLinearTransformation.setSymbols(value)
           parseArgs(list, tail)
         case unknown :: _ =>
-          println("Unknown option " + unknown)
-          println("Try run with --help to list the supported options")
-          exit(1)
+          throw new Exception("Unknown option " + unknown + "\n" + "Try run with --help to list the supported options")
       }
     }
 
-    parseArgs(ListBuffer[Command](), args.toList)
+    val (first, second, third) = parseArgs(ListBuffer[Command](), args.toList)
+
+    if (!isImageSet)
+      throw new Exception("Input image source must be specified")
+
+    if (!isOutputSet)
+      throw new Exception("Output method must be specified")
+
+    (first, second, third)
   }
 
 }

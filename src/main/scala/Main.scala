@@ -3,22 +3,26 @@ import convertor.ImageConvertor
 import image.pixel.RGBAPixel
 import parser.ArgumentParser
 
-import java.awt.image.BufferedImage
-import java.io.File
-import javax.imageio.ImageIO
+import scala.sys.exit
 
 object Main extends App {
-  val (commands, loader, output) = ArgumentParser.parse(args)
 
-  val image = loader.load()
-  val imageConvertor = new ImageConvertor[RGBAPixel]
+  try {
+    val (commands, loader, output) = ArgumentParser.parse(args)
 
-  var grayscaled = imageConvertor.RGBaToGrayscale(image)
+    val image = loader.load()
+    val imageConvertor = new ImageConvertor[RGBAPixel]
 
-  for (cmd <- commands)
-    grayscaled = cmd.execute(grayscaled)
+    var grayscaled = imageConvertor.RGBaToGrayscale(image)
 
-  for (out <- output)
-    out.save(grayscaled)
+    for (cmd <- commands)
+      grayscaled = cmd.execute(grayscaled)
 
+    for (out <- output)
+      out.save(grayscaled)
+  } catch {
+    case e: Exception =>
+      println(e.getLocalizedMessage)
+      exit(1)
+  }
 }
