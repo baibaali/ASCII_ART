@@ -1,4 +1,4 @@
-package command.filter
+package command.filter.rotate
 
 import command.Command
 import image.GrayscaleImage

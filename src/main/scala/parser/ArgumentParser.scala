@@ -2,7 +2,9 @@ package parser
 
 import command.Command
 import command.`export`.{ConsoleOutput, FileOutput}
-import command.filter.{Brightness, Flip, FontAspectRatio, Invert, Rotate, Scale}
+import command.filter.flip.Flip
+import command.filter.rotate.Rotate
+import command.filter.{Brightness, FontAspectRatio, Invert, Scale}
 import image.loader.fileLoader.{JPGImageLoader, PNGImageLoader}
 import image.loader.ImageLoader
 import image.loader.imageGenerator.RandomImageGenerator
