@@ -1,30 +1,32 @@
 package image.loader.imageGenerator
 
-import image.RGBImage
+import image.{RGBAImage, RGBImage}
 import image.loader.ImageLoader
-import image.pixel.RGBPixel
+import image.pixel.{RGBAPixel, RGBPixel}
 
 import scala.collection.mutable.ArrayBuffer
 
 class RandomImageGenerator extends ImageLoader {
-  override def load(): RGBImage = {
+  override def load(): RGBAImage = {
 
     val rand   = scala.util.Random
-    val width  = rand.nextInt(1000) + 1
-    val height = rand.nextInt(1000) + 1
+    val width  = rand.nextInt(1000) + 100
+    val height = rand.nextInt(1000) + 100
 
-    val image = new RGBImage()
+    val image = new RGBAImage()
 
-    for (_ <- 0 until height) {
-      val row = new ArrayBuffer[RGBPixel]()
-      for (_ <- 0 until width) {
+    for (x <- 0 until height) {
+      val row = new ArrayBuffer[RGBAPixel]()
+      for (y <- 0 until width) {
         row.append(
-          RGBPixel(
+          RGBAPixel(
+            0,
             rand.nextInt(256),
-            rand.nextInt(256),
-            rand.nextInt(256)
+            rand.nextInt(58),
+            rand.nextInt(128)
           ))
       }
+      image.appendRow(row)
     }
 
     image

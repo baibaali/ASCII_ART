@@ -1,8 +1,7 @@
 package image.loader
 
-import image.pixel.Pixel
-import image.{Image}
+import image.RGBAImage
 
 trait Loader {
-  def load(): Object
+  def load(): RGBAImage
 }

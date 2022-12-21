@@ -19,7 +19,6 @@ abstract class ImageLoader extends Loader {
     val hasAlphaChannel = image.getAlphaRaster != null
 
     val result = new RGBAImage
-    val temp_row = new ArrayBuffer[RGBAPixel]()
 
     var pixelLength = 4
     var step = 3
@@ -32,6 +31,8 @@ abstract class ImageLoader extends Loader {
       step -= 1
     }
 
+    var temp_row = new ArrayBuffer[RGBAPixel]()
+
     while (pixel + step < pixels.length) {
       temp_row.append( {
         step match {
@@ -40,13 +41,13 @@ abstract class ImageLoader extends Loader {
         }
       })
       column = (column + 1) % width
-      row   += (column == 0)
 
       if (column == 0){
+        row += 1
         if (temp_row.length != width)
           throw new Exception("Something went wrong, while reading the image.")
         result.appendRow(temp_row)
-        temp_row.clear()
+        temp_row = new ArrayBuffer[RGBAPixel]()
       }
 
       pixel += pixelLength

@@ -52,6 +52,9 @@ Note that --input is required.
               exit(1)
           }
           parseArgs(list, tail)
+        case "--image-random" :: tail =>
+          loader = new RandomImageGenerator()
+          parseArgs(list, tail)
         case "--output-file" :: value :: tail =>
           parseArgs(list.append(new FileOutput(value)), tail)
         case "--output-console" :: tail =>
