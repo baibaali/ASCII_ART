@@ -17,7 +17,13 @@ class JPGImageLoader (path: String) extends ImageLoader {
       if (image.getWidth <= 0 || image.getHeight <= 0)
         throw new Exception("Unsupported image resolution. Must be non-zero")
 
-      getPixels(image)
+      try {
+        getPixels(image)
+      } catch {
+        case e: Exception =>
+          println(e.getLocalizedMessage)
+          exit(1)
+      }
 
     } catch {
       case e: IOException =>

@@ -43,6 +43,8 @@ abstract class ImageLoader extends Loader {
       row   += (column == 0)
 
       if (column == 0){
+        if (temp_row.length != width)
+          throw new Exception("Something went wrong, while reading the image.")
         result.appendRow(temp_row)
         temp_row.clear()
       }
