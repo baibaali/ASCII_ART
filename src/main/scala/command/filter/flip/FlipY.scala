@@ -6,7 +6,7 @@ import image.pixel.GrayscalePixel
 
 import scala.collection.mutable.ArrayBuffer
 
-case class FlipY() extends Command {
+class FlipY() extends Command {
   override def execute(image: GrayscaleImage): GrayscaleImage = {
     val result = new GrayscaleImage
 

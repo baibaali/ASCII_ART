@@ -1,4 +1,3 @@
-package MainTest
 
 import org.scalatest.FunSuite
 import command.Command
@@ -20,15 +19,14 @@ class MainTest extends FunSuite {
       .append("--rotate")
       .append("-90")
       .append("--flip")
-      .append("x")
+      .append("y")
       .append("--output-file")
       .append("src/test/resources/output/test_rgb.txt")
 
     val (commands, loader, output) = ArgumentParser.parse(args.toArray)
 
     val image = loader.load()
-
-    val convertor = new ImageConvertor[RGBAPixel]()
+    val convertor = new ImageConvertor[RGBAPixel]
 
     var grayscaled_image = convertor.RGBaToGrayscale(image)
 
@@ -42,8 +40,8 @@ class MainTest extends FunSuite {
 
     val lines = bf.getLines.toList
 
-    assert(lines.head == "+%")
-    assert(lines(1)   == "=#")
+    assert(lines.head == "#=")
+    assert(lines(1)   == "%+")
 
     bf.close()
 
