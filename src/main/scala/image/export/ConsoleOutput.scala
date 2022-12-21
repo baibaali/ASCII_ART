@@ -1,14 +1,11 @@
-package command.`export`
+package image.`export`
 
-import command.Command
-import image.{GrayscaleImage, Image}
-import image.pixel.Pixel
+import image.GrayscaleImage
 import transformation.DefaultLinearTransformation
 
-import java.io.{BufferedWriter, File, FileWriter}
 
-class ConsoleOutput extends Command {
-  override def execute(image: GrayscaleImage): GrayscaleImage = {
+class ConsoleOutput extends ImageWriter {
+   override def save(image: GrayscaleImage): Unit = {
     val width = image.getWidth
     val height = image.getHeight
 
@@ -17,7 +14,5 @@ class ConsoleOutput extends Command {
         print(DefaultLinearTransformation.getSymbol(image.getPixel(i, j).getGrayscale))
       println()
     }
-
-    image
-  }
+   }
 }

@@ -1,14 +1,13 @@
 package parser
 
 import command.Command
-import command.`export`.{ConsoleOutput, FileOutput}
 import command.filter.flip.Flip
 import command.filter.rotate.Rotate
-import command.filter.{Brightness, FontAspectRatio, Invert, Scale}
+import command.filter.{Brightness, Invert, Scale}
+import image.`export`.{ConsoleOutput, FileOutput, ImageWriter}
 import image.loader.fileLoader.{JPGImageLoader, PNGImageLoader}
 import image.loader.ImageLoader
 import image.loader.imageGenerator.RandomImageGenerator
-import image.pixel.GrayscalePixel
 import transformation.DefaultLinearTransformation
 
 import scala.collection.mutable.ListBuffer
@@ -20,29 +19,27 @@ object ArgumentParser {
 Usage: run [options]
   [ --help                                  ]   Lists the supported options
     --image                 string              Path to input file.
-  [ --output-file           string=/dev/null]   Path to output file.
+  [ --output-file           string          ]   Path to output file.
   [ --output-console                        ]   Print output to console
   [ --rotate                int             ]   Rotation degree
-  [ --scale                 float           ]   Scale factor
   [ --invert                                ]   Inverting image
   [ --brightness            int             ]   Brightening image
   [ --flip                  x|y             ]   Flips the image on 'x' or 'y' axis
-  [ --font-aspect-ration    int:int         ]   Changes the aspect ratio of the output image according to a font’s aspect ratio
-
-Note that --input is required.
+Note that --input and --output-file/--output-console is required.
   """
 
-  def parse(args: Array[String]) : (ListBuffer[Command], ImageLoader) = {
+  def parse(args: Array[String]) : (ListBuffer[Command], ImageLoader, ListBuffer[ImageWriter]) = {
 
     if (args.length == 0)
       println(usage)
 
     var loader: ImageLoader = new RandomImageGenerator()
+    var output = new ListBuffer[ImageWriter]
 
     //TODO: convert to int/double properly
-    def parseArgs(list: ListBuffer[Command], argumentList: List[String]): (ListBuffer[Command], ImageLoader) = {
+    def parseArgs(list: ListBuffer[Command], argumentList: List[String]): (ListBuffer[Command], ImageLoader, ListBuffer[ImageWriter]) = {
       argumentList match {
-        case Nil => (list, loader)
+        case Nil => (list, loader, output)
         case "--help" :: tail  =>
           println(usage)
           exit(0)
@@ -60,9 +57,11 @@ Note that --input is required.
           loader = new RandomImageGenerator()
           parseArgs(list, tail)
         case "--output-file" :: value :: tail =>
-          parseArgs(list.append(new FileOutput(value)), tail)
+          output.append(new FileOutput(value))
+          parseArgs(list, tail)
         case "--output-console" :: tail =>
-          parseArgs(list.append(new ConsoleOutput()), tail)
+          output.append(new ConsoleOutput())
+          parseArgs(list, tail)
         case "--rotate" :: value :: tail =>
           parseArgs(list.append(new Rotate(value.toInt)), tail)
         case "--scale" :: value :: tail =>
@@ -76,8 +75,6 @@ Note that --input is required.
         case "--custom-table" :: value :: tail =>
           DefaultLinearTransformation.setSymbols(value)
           parseArgs(list, tail)
-        case "--font-aspect-ratio" :: value :: tail =>
-          parseArgs(list.append(new FontAspectRatio(value)), tail)
         case unknown :: _ =>
           println("Unknown option " + unknown)
           println("Try run with --help to list the supported options")
