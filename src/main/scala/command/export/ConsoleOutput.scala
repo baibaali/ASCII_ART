@@ -8,7 +8,7 @@ import transformation.DefaultLinearTransformation
 import java.io.{BufferedWriter, File, FileWriter}
 
 class ConsoleOutput extends Command {
-  override def execute(image: GrayscaleImage): Unit = {
+  override def execute(image: GrayscaleImage): GrayscaleImage = {
     val width = image.getWidth
     val height = image.getHeight
 
@@ -17,5 +17,7 @@ class ConsoleOutput extends Command {
         print(DefaultLinearTransformation.getSymbol(image.getPixel(i, j).getGrayscale))
       println()
     }
+
+    image
   }
 }

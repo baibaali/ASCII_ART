@@ -5,5 +5,5 @@ import image.{GrayscaleImage, Image}
 import image.pixel.Pixel
 
 class Scale (scaleFactor: Double) extends Command {
-  override def execute(image: GrayscaleImage): Unit = ???
+  override def execute(image: GrayscaleImage): GrayscaleImage = ???
 }

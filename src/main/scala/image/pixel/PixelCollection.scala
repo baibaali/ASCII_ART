@@ -16,7 +16,10 @@ class PixelCollection[P <: Pixel] (val pixels: ArrayBuffer[ArrayBuffer[P]]) {
     pixels(i)(j)
   }
 
-  def appendRow(row: ArrayBuffer[P]): Unit = {
-    pixels.append(row.clone())
-  }
+  def appendRow(row: ArrayBuffer[P]): Unit = pixels.append(row.clone())
+
+
+  def prependRow(row: ArrayBuffer[P]): Unit = pixels.prepend(row.clone())
+
+  def getRow(i: Int): ArrayBuffer[P] = pixels(i)
 }

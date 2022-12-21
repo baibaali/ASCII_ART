@@ -6,6 +6,7 @@ import command.filter.{Brightness, Flip, FontAspectRatio, Invert, Rotate, Scale}
 import image.loader.fileLoader.{JPGImageLoader, PNGImageLoader}
 import image.loader.ImageLoader
 import image.loader.imageGenerator.RandomImageGenerator
+import image.pixel.GrayscalePixel
 
 import scala.collection.mutable.ListBuffer
 import scala.sys.exit
@@ -56,21 +57,21 @@ Note that --input is required.
           loader = new RandomImageGenerator()
           parseArgs(list, tail)
         case "--output-file" :: value :: tail =>
-          parseArgs(list.append(new FileOutput(value)), tail)
+          parseArgs(list.appended(new FileOutput(value)), tail)
         case "--output-console" :: tail =>
-          parseArgs(list.append(new ConsoleOutput()), tail)
+          parseArgs(list.appended(new ConsoleOutput()), tail)
         case "--rotate" :: value :: tail =>
-          parseArgs(list.append(new Rotate(value.toInt)), tail)
+          parseArgs(list.appended(new Rotate(value.toInt)), tail)
         case "--scale" :: value :: tail =>
-          parseArgs(list.append(new Scale(value.toDouble)), tail)
+          parseArgs(list.appended(new Scale(value.toDouble)), tail)
         case "--invert" :: tail =>
-          parseArgs(list.append(new Invert()), tail)
+          parseArgs(list.appended(new Invert()), tail)
         case "--brightness" :: value :: tail =>
           parseArgs(list.append(new Brightness(value.toInt)), tail)
         case "--flip" :: value ::tail =>
-          parseArgs(list.append(new Flip(value)), tail)
+          parseArgs(list.appended(new Flip(value)), tail)
         case "--font-aspect-ratio" :: value :: tail =>
-          parseArgs(list.append(new FontAspectRatio(value)), tail)
+          parseArgs(list.appended(new FontAspectRatio(value)), tail)
         case unknown :: _ =>
           println("Unknown option " + unknown)
           println("Try run with --help to list the supported options")

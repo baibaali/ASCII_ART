@@ -26,7 +26,7 @@ object Main extends App {
 
   ImageIO.write(out, "png", new File("test.png"))
 
-  val grayscaled = imageConvertor.RGBaToGrayscale(image)
+  var grayscaled = imageConvertor.RGBaToGrayscale(image)
 
   val width_g = grayscaled.getWidth
   val height_g = grayscaled.getHeight
@@ -40,6 +40,8 @@ object Main extends App {
 
   ImageIO.write(out_g, "png", new File("test_g.png"))
 
-  commands.head.execute(grayscaled)
+  for (cmd <- commands) {
+    grayscaled = cmd.execute(grayscaled)
+  }
 
 }
