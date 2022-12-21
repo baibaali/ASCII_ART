@@ -2,9 +2,12 @@ package parser
 
 import command.Command
 import command.`export`.{ConsoleOutput, FileOutput}
-import command.filter.{Brightness, Flip, FontAspectRatio, Invert, LoadImage, Rotate, Scale}
+import command.filter.{Brightness, Flip, FontAspectRatio, Invert, Rotate, Scale}
+import image.loader.fileLoader.{JPGImageLoader, PNGImageLoader}
+import image.loader.ImageLoader
+import image.loader.imageGenerator.RandomImageGenerator
 
-import scala.collection.mutable.{ListBuffer}
+import scala.collection.mutable.ListBuffer
 import scala.sys.exit
 
 object ArgumentParser {
@@ -25,20 +28,30 @@ Usage: run [options]
 Note that --input is required.
   """
 
-  def parse(args: Array[String]) = {
+  def parse(args: Array[String]) : (ListBuffer[Command], ImageLoader) = {
 
     if (args.length == 0)
       println(usage)
 
+    var loader: ImageLoader = new RandomImageGenerator()
+
     //TODO: convert to int/double properly
-    def parseArgs(list: ListBuffer[Command], argumentList: List[String]): ListBuffer[Command] = {
+    def parseArgs(list: ListBuffer[Command], argumentList: List[String]): (ListBuffer[Command], ImageLoader) = {
       argumentList match {
-        case Nil => list
-        case "--help" :: value =>
+        case Nil => (list, loader)
+        case "--help" :: tail  =>
           println(usage)
           exit(0)
         case "--image" :: value :: tail =>
-          parseArgs(list.append(new LoadImage(value)), tail)
+          val fileFormat = value.substring(value.lastIndexOf('.') + 1)
+          fileFormat match {
+            case "png" => loader = new PNGImageLoader(value)
+            case "jpg" => loader = new JPGImageLoader(value)
+            case _     =>
+              print("Unsupported file format")
+              exit(1)
+          }
+          parseArgs(list, tail)
         case "--output-file" :: value :: tail =>
           parseArgs(list.append(new FileOutput(value)), tail)
         case "--output-console" :: tail =>
@@ -62,8 +75,7 @@ Note that --input is required.
       }
     }
 
-    val options = parseArgs(ListBuffer[Command](), args.toList)
-    println(options)
+    parseArgs(ListBuffer[Command](), args.toList)
   }
 
 }
