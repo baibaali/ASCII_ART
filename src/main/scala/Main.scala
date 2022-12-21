@@ -40,4 +40,6 @@ object Main extends App {
 
   ImageIO.write(out_g, "png", new File("test_g.png"))
 
+  commands.head.execute(grayscaled)
+
 }
