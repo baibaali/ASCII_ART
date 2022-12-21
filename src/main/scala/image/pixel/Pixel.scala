@@ -11,4 +11,9 @@ trait Pixel {
 
     value
   }
+
+  def getRed: Int
+  def getGreen: Int
+  def getBlue: Int
+  def pixelToInt: Int
 }

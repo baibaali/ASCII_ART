@@ -12,6 +12,6 @@ case class RGBPixel (r: Int, g: Int, b: Int) extends Pixel {
   def getGreen: Int = g
   def getBlue: Int = b
 
-  def pixelToInt(): Int = r + g + b
+  override def pixelToInt: Int = (0 << 24) | (r << 16) | (g << 8) | b
 
 }
